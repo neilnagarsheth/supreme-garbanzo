@@ -366,7 +366,7 @@ defmodule GCloudex.CloudStorage.Impl do
              https://cloud.google.com/storage/docs/access-control/lists#predefined-acl
 
       """
-      @spec put_object(bucket :: binary, filepath :: binary, bucket_path :: binary, headers :: list) :: HTTPResponse.t
+      @spec put_object_acl(bucket :: binary, filepath :: binary, bucket_path :: binary, headers :: list) :: HTTPResponse.t
       def put_object_acl(bucket, filepath, bucket_path \\ :empty, headers \\ []) do
         body = {:file, filepath}
         case bucket_path do
