@@ -345,6 +345,36 @@ defmodule GCloudex.CloudStorage.Impl do
         end
       end
 
+
+      @doc"""
+      Uploads the file in the given 'filepath' to the specified 'bucket' With custom headers for setting
+      the acl on the object
+      If a 'bucket_path' is specified then the filename must be included at
+      the end:
+
+        put_object "somebucket",
+                   "/home/user/Documents/this_file",
+                   "new_folder/some_other_folder/this_file"
+
+        => # This will upload the file to the directory in 'bucket_path' and
+             will create the directories if they do not exist.
+
+      Example request headers:
+        [{"x-goog-acl", "bucket-owner-read"}]
+
+        => # This will give the object bucket-owner-read priveledges as desribed in this doc:
+             https://cloud.google.com/storage/docs/access-control/lists#predefined-acl
+
+      """
+      @spec put_object(bucket :: binary, filepath :: binary, bucket_path :: binary, headers :: list) :: HTTPResponse.t
+      def put_object_acl(bucket, filepath, bucket_path \\ :empty, headers \\ []) do
+        body = {:file, filepath}
+        case bucket_path do
+          :empty -> request_query :put, bucket, headers, body, filepath
+          _      -> request_query :put, bucket, headers, body, bucket_path
+        end
+      end
+
       @doc"""
       Copies the specified 'source_object' into the given 'new_bucket' as
       'new_object'.
